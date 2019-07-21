@@ -29,3 +29,7 @@ build/
 
 ### VS Code ###
 .vscode/
+OpenSSH_5.6p1,
+"debug1\357\200\272"
+src/main/resources/static/
+src/main/resources/templates/
