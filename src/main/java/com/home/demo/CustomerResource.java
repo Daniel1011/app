@@ -2,6 +2,7 @@ package com.home.demo;
 
 import com.home.demo.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
@@ -54,5 +55,24 @@ public class CustomerResource {
         //customerRepository.deleteById(  11L);
 
         return c;
+    }
+
+    @PutMapping("/customers/{id}")
+    Customer replaceCustomer(@RequestBody Customer c, @PathVariable Long id ){
+            return customerRepository.findById(id)
+                .map(customer -> {
+                    customer.setFirstName(c.getFirstName());
+                    customer.setLastName(c.getLastName());
+                    return customerRepository.save(customer);
+                })
+                .orElseGet(() -> {
+                   throw new  IllegalArgumentException();
+                });
+
+    }
+
+    @DeleteMapping("/customers/{id}")
+    public void deleteCustomer(@PathVariable long id){
+        customerRepository.deleteById(id);
     }
 }
