@@ -2,10 +2,12 @@ package com.home.demo;
 
 import com.home.demo.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,9 +23,36 @@ public class CustomerResource {
         return customers;
     }
 
-    @RequestMapping("/customers")
+    @GetMapping("/customers")
     public List<Customer> findAll(){
         List<Customer> customers = customerRepository.findAll( );
         return customers;
+    }
+
+    @Autowired
+    private EntityManager entityManager;
+
+
+    @GetMapping("/customers/new")
+    @Transactional
+    public Customer createCustomerWithGetMethod(@RequestParam("name") String name){
+//        Customer c = customerRepository.save( new Customer( "Quang", "Pham" ) );
+//        return c;
+
+        String[] names = name.split( " " );
+
+        Customer c = new Customer(names[0], names[1]);
+       entityManager.persist( c );
+        //customerRepository.deleteById(  11L);
+
+       return c;
+    }
+
+    @PostMapping("/customers")
+    public Customer createCustomer(@RequestBody Customer c){
+        customerRepository.save( c);
+        //customerRepository.deleteById(  11L);
+
+        return c;
     }
 }
